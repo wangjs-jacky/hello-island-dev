@@ -1,6 +1,6 @@
 /* react 渲染逻辑 */
 
-import { createRoot } from "react-dom";
+import { createRoot } from "react-dom/client";
 import { App } from "./app";
 
 function renderInBrowser() {
