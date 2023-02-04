@@ -2,7 +2,10 @@ import { build as viteBuild, InlineConfig } from "vite";
 import { CLIENT_ENTRY_PATH, SERVER_ENTRY_PATH } from "./constants";
 import type { RollupOutput } from "rollup";
 import { join } from "path";
-import * as fs from "fs-extra";
+import fs from "fs-extra"; /* fs-extra 的包，当构建为 esm 模块时，需配置 tsconfig*/
+import ora from "ora";
+
+/* const dynamicImport = new Function('m', 'return import(m)'); */
 
 export async function bundle(root: string) {
   const resolveViteConfig = (isServer: boolean = false): InlineConfig => ({
@@ -21,7 +24,10 @@ export async function bundle(root: string) {
   })
 
   try {
-    console.log("Building client + server bundles...");
+    /* const { default: ora } = await dynamicImport("ora"); */
+
+    /* const spinner = ora();
+    spinner.start("Building client + server bundles..."); */
     const [clientBundle, serverBundle] = await Promise.all([
       /* client build */
       viteBuild(resolveViteConfig()),
@@ -70,7 +76,7 @@ export async function build(root: string = ".") {
   const [clientBundle, serverBundle] = await bundle(root);
   /* 2. 使用编译后的 server-entry 模块导出的 render 函数 */
   const serverEntryPath = join(process.cwd(), root, ".temp", "ssr-entry.js");
-  const { render } = require(serverEntryPath); /* 使用 require 导入 CJS 包*/
+  const { render } = await import(serverEntryPath); /* 使用 require 导入 CJS 包*/
   /* 3. 服务端渲染, 产出 HTML */
   renderPage(render, root, clientBundle);
 }

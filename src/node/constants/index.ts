@@ -1,7 +1,7 @@
 import { join } from "path";
 
 /* 应用根路径 */
-export const PACKAGE_ROOT = join(__dirname, "..", "..", "..");
+export const PACKAGE_ROOT = join(__dirname, "..");
 
 export const RUNTIME_PATH = join(PACKAGE_ROOT, "src", "runtime");
 
