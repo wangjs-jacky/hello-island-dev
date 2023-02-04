@@ -5,6 +5,12 @@
     "rootDir": "src", // 包含所有待解析的 ts 文件夹
     "target": "ESNext", // 构建产物：语法
     "jsx": "react-jsx",
-    "esModuleInterop": true
-  }
+    "esModuleInterop": true,
+  },
+  "include": [
+    "src",
+    /* 需要被 lint */
+    ".eslintrc.js",
+    "tsup.config.js"
+  ]
 }
