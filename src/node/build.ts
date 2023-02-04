@@ -8,7 +8,7 @@ import ora from "ora";
 /* const dynamicImport = new Function('m', 'return import(m)'); */
 
 export async function bundle(root: string) {
-  const resolveViteConfig = (isServer: boolean = false): InlineConfig => ({
+  const resolveViteConfig = (isServer = false): InlineConfig => ({
     mode: "production",
     root,
     build: {
@@ -17,11 +17,11 @@ export async function bundle(root: string) {
       rollupOptions: {
         input: isServer ? SERVER_ENTRY_PATH : CLIENT_ENTRY_PATH,
         output: {
-          format: isServer ? "cjs" : "esm"
-        }
-      }
-    }
-  })
+          format: isServer ? "cjs" : "esm",
+        },
+      },
+    },
+  });
 
   try {
     /* const { default: ora } = await dynamicImport("ora"); */
@@ -32,9 +32,9 @@ export async function bundle(root: string) {
       /* client build */
       viteBuild(resolveViteConfig()),
       /* server build */
-      viteBuild(resolveViteConfig(true))
+      viteBuild(resolveViteConfig(true)),
     ]);
-    return [clientBundle, serverBundle] as [RollupOutput, RollupOutput]
+    return [clientBundle, serverBundle] as [RollupOutput, RollupOutput];
   } catch (error) {
     console.log(error);
   }
@@ -66,17 +66,19 @@ export async function renderPage(
       <script type="module" src="/${clientChunk?.fileName}"></script>
     </body>
   </html>`.trim();
-  await fs.writeFile(join(root, 'build', 'index.html'), html);
+  await fs.writeFile(join(root, "build", "index.html"), html);
   /* 删除临时文件 .temp（仅用于使用 renderToString 获取 html 文本） */
-  await fs.remove(join(root, '.temp'));
+  await fs.remove(join(root, ".temp"));
 }
 
-export async function build(root: string = ".") {
+export async function build(root = ".") {
   /* 1. bundle - client 端 + server 端 */
   const [clientBundle, serverBundle] = await bundle(root);
   /* 2. 使用编译后的 server-entry 模块导出的 render 函数 */
   const serverEntryPath = join(process.cwd(), root, ".temp", "ssr-entry.js");
-  const { render } = await import(serverEntryPath); /* 使用 require 导入 CJS 包*/
+  const { render } = await import(
+    serverEntryPath
+  ); /* 使用 require 导入 CJS 包*/
   /* 3. 服务端渲染, 产出 HTML */
-  renderPage(render, root, clientBundle);
+  await renderPage(render as () => string, root, clientBundle);
 }

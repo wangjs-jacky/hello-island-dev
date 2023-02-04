@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-export function Layout() {
+export const Layout = () => {
   const [count, setCount] = useState(0);
   return (
     <div>
@@ -11,4 +11,4 @@ export function Layout() {
       </div>
     </div>
   );
-}
+};
