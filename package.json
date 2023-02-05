@@ -4,10 +4,11 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "prepare": "husky install",
     "watch:tsc": "tsc -w",
     "watch": "tsup --watch",
     "build": "tsup",
-    "lint": "eslint --fix --ext .ts,.tsx,.js,.jsx ./"
+    "lint": "TIMING=1 eslint --fix --ext .ts,.tsx,.js,.jsx ./"
   },
   "bin": {
     "island": "bin/island.js"
@@ -19,9 +20,13 @@
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
+    "chalk": "^5.2.0",
     "eslint": "^8.33.0",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.0",
+    "os-locale": "^6.0.2",
     "prettier": "^2.8.3",
     "typescript": "^4.9.5"
   },
