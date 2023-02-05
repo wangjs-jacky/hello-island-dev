@@ -1,0 +1,6 @@
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# 在 v8 husky 中使用 $1 传入 HUSKY_GIT_PARAMS 变量
+# 这里使用 env 传入环境变量
+env HUSKY_GIT_PARAMS=$1 node ./scripts/verifyCommit.mjs
