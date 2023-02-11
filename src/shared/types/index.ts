@@ -41,5 +41,12 @@ export interface UserConfig {
   /* 主题面板设置 */
   themeConfig?: ThemeConfig;
   /* Vite 配置 */
-  vite?: ViteConfiguration;
+  viteConfig?: ViteConfiguration;
+}
+
+/* 扩展：UserConfig 的超集 */
+export interface SiteConfig {
+  root: string;
+  configPath: string;
+  siteData: UserConfig;
 }

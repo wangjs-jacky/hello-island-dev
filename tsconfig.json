@@ -6,6 +6,7 @@
     "target": "ESNext", // 构建产物：语法
     "jsx": "react-jsx",
     "esModuleInterop": true,
+    "baseUrl": "src"
   },
   "include": [
     "src",
