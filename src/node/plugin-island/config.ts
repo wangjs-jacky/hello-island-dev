@@ -8,8 +8,10 @@ import { relative } from "node:path";
  */
 const SITE_DATA_ID = "island:site-data";
 
-export function pluginConfig(config: SiteConfig): Plugin {
-  let server: ViteDevServer = null;
+export function pluginConfig(
+  config: SiteConfig,
+  restartServer: () => Promise<void>
+): Plugin {
   return {
     name: "island:config",
     resolveId(id) {
@@ -22,10 +24,6 @@ export function pluginConfig(config: SiteConfig): Plugin {
       if (id === "\0" + SITE_DATA_ID) {
         return `export default ${JSON.stringify(config.siteData)}`;
       }
-    },
-    /* 通过 configureServer 可以获取 server 实例 */
-    configureServer(s) {
-      server = s;
     },
     async handleHotUpdate(ctx) {
       /* 监听范围 */
@@ -42,7 +40,9 @@ export function pluginConfig(config: SiteConfig): Plugin {
             ctx.file
           )} changed, restarting server ......`
         );
-        await server.restart();
+
+        /* 重启 Dev Server：对原先的 server 进行销毁后，重读配置 */
+        await restartServer();
       }
     },
   };
