@@ -3,6 +3,7 @@ import { pluginIndexHtml } from "./plugin-island/indexHtml";
 import pluginReact from "@vitejs/plugin-react";
 import { resolveConfig } from "./config";
 import { pluginConfig } from "./plugin-island/config";
+import { PACKAGE_ROOT } from "./constants";
 
 export async function createDevServer(
   root: string,
@@ -12,7 +13,7 @@ export async function createDevServer(
   const siteConfig = await resolveConfig(root, "serve", "development");
 
   return createServer({
-    root,
+    root: PACKAGE_ROOT,
     plugins: [
       pluginIndexHtml(),
       pluginReact(),

@@ -1,4 +1,6 @@
 import cac from "cac";
+import { resolve } from "path";
+import { resolveConfig } from "./config";
 import { build } from "./build";
 /* import { createDevServer } from "./dev"; */
 
@@ -23,8 +25,14 @@ cli.command("dev [root]", "start dev server").action(async (root: string) => {
 cli
   .command("build [root]", "build in production")
   .action(async (root: string) => {
-    console.log("build", root);
-    await build(root);
+    try {
+      /* 转化为绝对路径 */
+      root = resolve(root);
+      const config = await resolveConfig(root, "build", "production");
+      await build(root, config);
+    } catch (error) {
+      console.log("error", error);
+    }
   });
 
 cli.parse();

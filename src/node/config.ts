@@ -2,7 +2,7 @@
 import { resolve } from "node:path";
 import fs from "fs-extra";
 import { loadConfigFromFile } from "vite";
-import { SiteConfig, UserConfig } from "../shared/types";
+import { SiteConfig, UserConfig } from "shared/types";
 
 type RawConfig =
   | UserConfig

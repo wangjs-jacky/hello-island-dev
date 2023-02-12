@@ -1,6 +1,7 @@
-import { SiteConfig } from "../../shared/types";
-import { Plugin, ViteDevServer } from "vite";
-import { relative } from "node:path";
+import { SiteConfig } from "shared/types";
+import { Plugin } from "vite";
+import { join, relative } from "node:path";
+import { PACKAGE_ROOT, RUNTIME_PATH } from "node/constants";
 
 /* 虚拟模块:
   作用等价于 umi 中的运行时概念，因为在编译阶段通过 fs.readFile 是轻松获取到 config 配置的。
@@ -10,10 +11,21 @@ const SITE_DATA_ID = "island:site-data";
 
 export function pluginConfig(
   config: SiteConfig,
-  restartServer: () => Promise<void>
+  restartServer?: () => Promise<void>
 ): Plugin {
   return {
     name: "island:config",
+    // 新增插件钩子
+    config() {
+      return {
+        root: PACKAGE_ROOT,
+        resolve: {
+          alias: {
+            "@runtime": join(RUNTIME_PATH, "index.ts"),
+          },
+        },
+      };
+    },
     resolveId(id) {
       if (id === SITE_DATA_ID) {
         /* 当解析到这个虚拟模块后，加上 `\0` 后返回 */
