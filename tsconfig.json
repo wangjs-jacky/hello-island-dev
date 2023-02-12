@@ -2,11 +2,19 @@
   "compilerOptions": {
     "module": "commonjs", // 构建产物：模块标准
     "outDir": "dist", // 产物输出路径,
-    "rootDir": "src", // 包含所有待解析的 ts 文件夹
+    "rootDir": ".", // 包含所有待解析的 ts 文件夹
     "target": "ESNext", // 构建产物：语法
     "jsx": "react-jsx",
     "esModuleInterop": true,
-    "baseUrl": "src"
+    "baseUrl": "src",
+    "paths": {
+      "@runtime": [
+        "./runtime/index.ts"
+      ],
+      "shared/*": [
+        "shared/*"
+      ]
+    },
   },
   "include": [
     "src",
