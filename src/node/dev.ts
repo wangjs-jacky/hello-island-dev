@@ -4,6 +4,7 @@ import pluginReact from "@vitejs/plugin-react";
 import { resolveConfig } from "./config";
 import { pluginConfig } from "./plugin-island/config";
 import { PACKAGE_ROOT } from "./constants";
+import { pluginRoutes } from "./plugin-routes";
 
 export async function createDevServer(
   root: string,
@@ -18,6 +19,7 @@ export async function createDevServer(
       pluginIndexHtml(),
       pluginReact(),
       pluginConfig(siteConfig, restartServer),
+      pluginRoutes({ root: siteConfig.root }),
     ],
   });
 }
