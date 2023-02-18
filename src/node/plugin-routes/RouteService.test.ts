@@ -34,10 +34,8 @@ describe("RouteService", async () => {
 
   // eslint-disable-next-line @typescript-eslint/require-await
   test("generate routes code", async () => {
-    expect(
-      routeService.generateRoutesCode().replaceAll(testDir, "TEST_DIR")
-    ).toMatchInlineSnapshot(
-      `
+    expect(routeService.generateRoutesCode().replaceAll(testDir, "TEST_DIR"))
+      .toMatchInlineSnapshot(`
       "
           import React from 'react';
           import loadable from '@loadable/component';
@@ -47,11 +45,10 @@ describe("RouteService", async () => {
       const Route2 = loadable(() => import('TEST_DIR/index.mdx'));
           export const routes = [
           { path: '/a', element: React.createElement(Route0)},
-          { path: '/guide/b', element: React.createElement(Route1)},
-          { path: '/', element: React.createElement(Route2)}
+      { path: '/guide/b', element: React.createElement(Route1)},
+      { path: '/', element: React.createElement(Route2)}
           ];
           "
-    `
-    );
+    `);
   });
 });

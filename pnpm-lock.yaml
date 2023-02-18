@@ -5,6 +5,7 @@ specifiers:
   '@loadable/component': ^5.15.3
   '@mdx-js/rollup': ^2.3.0
   '@types/fs-extra': ^11.0.1
+  '@types/hast': ^2.3.4
   '@types/node': ^18.11.18
   '@types/react': ^18.0.27
   '@types/react-dom': ^18.0.10
@@ -38,6 +39,7 @@ specifiers:
   tsup: ^6.5.0
   typescript: ^4.9.5
   unified: ^10.1.2
+  unist-util-visit: ^4.1.2
   vite: ^4.1.1
   vitest: ^0.28.5
 
@@ -70,6 +72,7 @@ dependencies:
 
 devDependencies:
   '@loadable/component': registry.npmmirror.com/@loadable/component/5.15.3_react@18.2.0
+  '@types/hast': 2.3.4
   '@types/node': registry.npmmirror.com/@types/node/18.11.18
   '@typescript-eslint/eslint-plugin': registry.npmmirror.com/@typescript-eslint/eslint-plugin/5.50.0_go4drrxstycfikanvu45pi4vgq
   '@typescript-eslint/parser': registry.npmmirror.com/@typescript-eslint/parser/5.50.0_4vsywjlpuriuw3tl5oq6zy5a64
@@ -82,6 +85,7 @@ devDependencies:
   os-locale: registry.npmmirror.com/os-locale/6.0.2
   prettier: registry.npmmirror.com/prettier/2.8.3
   typescript: registry.npmmirror.com/typescript/4.9.5
+  unist-util-visit: 4.1.2
   vitest: registry.npmmirror.com/vitest/0.28.5
 
 packages:
@@ -359,7 +363,6 @@ packages:
     resolution: {integrity: sha512-wLEm0QvaoawEDoTRwzTXp4b4jpwiJDvR5KMnFnVodm3scufTlBOWRD6N1OBf9TZMhjlNsSfcO5V+7AF4+Vy+9g==}
     dependencies:
       '@types/unist': 2.0.6
-    dev: false
 
   /@types/mdast/3.0.10:
     resolution: {integrity: sha512-W864tg/Osz1+9f4lrGTZpCSO5/z4608eUp19tbozkq2HJK6i3z1kT0H9tlADXuYIb1YYOBByU4Jsqkk75q48qA==}
@@ -381,7 +384,6 @@ packages:
 
   /@types/unist/2.0.6:
     resolution: {integrity: sha512-PBjIUxZHOuj0R15/xuwJYjFi+KZdNFrehocChv4g5hu6aFroHue8m0lBP0POdK2nKzbw0cgV1mws8+V/JAcEkQ==}
-    dev: false
 
   /acorn-jsx/5.3.2_acorn@8.8.2:
     resolution: {integrity: sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==}
@@ -1634,7 +1636,6 @@ packages:
 
   /unist-util-is/5.2.0:
     resolution: {integrity: sha512-Glt17jWwZeyqrFqOK0pF1Ded5U3yzJnFr8CG1GMjCWTp9zDo2p+cmD6pWbZU8AgM5WU3IzRv6+rBwhzsGh6hBQ==}
-    dev: false
 
   /unist-util-position-from-estree/1.1.2:
     resolution: {integrity: sha512-poZa0eXpS+/XpoQwGwl79UUdea4ol2ZuCYguVaJS4qzIOMDzbqz8a3erUCOmubSZkaOuGamb3tX790iwOIROww==}
@@ -1666,7 +1667,6 @@ packages:
     dependencies:
       '@types/unist': 2.0.6
       unist-util-is: 5.2.0
-    dev: false
 
   /unist-util-visit/4.1.2:
     resolution: {integrity: sha512-MSd8OUGISqHdVvfY9TPhyK2VdUrPgxkUtWSuMHF6XAAFuL4LokseigBnZtPnJMu+FbynTkFNnFlyjxpVKujMRg==}
@@ -1674,7 +1674,6 @@ packages:
       '@types/unist': 2.0.6
       unist-util-is: 5.2.0
       unist-util-visit-parents: 5.1.3
-    dev: false
 
   /uvu/0.5.6:
     resolution: {integrity: sha512-+g8ENReyr8YsOc6fv/NVJs2vFdHBnBNdfE49rshrTzDWOlUx4Gq7KOS2GD8eqhy2j+Ejq29+SbKH8yjkAqXqoA==}

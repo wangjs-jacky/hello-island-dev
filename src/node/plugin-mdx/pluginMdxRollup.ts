@@ -5,6 +5,7 @@ import rehypePluginSlug from "rehype-slug";
 import { Plugin } from "vite";
 import remarkPluginFrontmatter from "remark-frontmatter";
 import remarkPluginMDXFrontMatter from "remark-mdx-frontmatter";
+import { rehypePluginPreWrapper } from "./rehypePlugins/preWrapper";
 
 /* markdown 解析可以单独封装一个插件 */
 
@@ -34,6 +35,7 @@ export function pluginMdxRollup(): Plugin {
           },
         },
       ],
+      rehypePluginPreWrapper,
     ],
   });
 }
