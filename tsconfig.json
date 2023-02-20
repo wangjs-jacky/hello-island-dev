@@ -20,6 +20,7 @@
     "src",
     /* 需要被 lint */
     ".eslintrc.js",
-    "tsup.config.js"
+    "tsup.config.js",
+    "vitest.config.ts"
   ]
 }

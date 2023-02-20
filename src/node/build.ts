@@ -5,16 +5,17 @@ import { join } from "path";
 import fs from "fs-extra"; /* fs-extra 的包，当构建为 esm 模块时，需配置 tsconfig*/
 import ora from "ora";
 import { SiteConfig } from "shared/types";
-import pluginReact from "@vitejs/plugin-react";
-import { pluginConfig } from "./plugin-island/config";
+import { createVitePlugins } from "./createVitePlugins";
 
 /* const dynamicImport = new Function('m', 'return import(m)'); */
 
 export async function bundle(root: string, config: SiteConfig) {
-  const resolveViteConfig = (isServer = false): InlineConfig => ({
+  const resolveViteConfig = async (
+    isServer = false
+  ): Promise<InlineConfig> => ({
     mode: "production",
     root,
-    plugins: [pluginReact(), pluginConfig(config)],
+    plugins: await createVitePlugins(config),
     ssr: {
       /* 构建问题：bundle 的产物为 commonjs ,react-router-dom 是一个 ESM 包
         除了可以将 bundle 打包为 ESM（不要这样做），可以将 `react-router-dom` 完整打进产物中。
@@ -40,9 +41,9 @@ export async function bundle(root: string, config: SiteConfig) {
     spinner.start("Building client + server bundles..."); */
     const [clientBundle, serverBundle] = await Promise.all([
       /* client build */
-      viteBuild(resolveViteConfig(false)),
+      viteBuild(await resolveViteConfig(false)),
       /* server build */
-      viteBuild(resolveViteConfig(true)),
+      viteBuild(await resolveViteConfig(true)),
     ]);
     return [clientBundle, serverBundle] as [RollupOutput, RollupOutput];
   } catch (error) {

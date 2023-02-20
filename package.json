@@ -8,7 +8,8 @@
     "watch:tsc": "tsc -w",
     "watch": "tsup --watch",
     "build": "tsup",
-    "lint": "TIMING=1 eslint --fix --ext .ts,.tsx,.js,.jsx ./"
+    "lint": "TIMING=1 eslint --fix --ext .ts,.tsx,.js,.jsx ./",
+    "test:unit": "vitest run"
   },
   "bin": {
     "island": "bin/island.js"
@@ -17,6 +18,8 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
+    "@loadable/component": "^5.15.3",
+    "@types/hast": "^2.3.4",
     "@types/node": "^18.11.18",
     "@typescript-eslint/eslint-plugin": "^5.50.0",
     "@typescript-eslint/parser": "^5.50.0",
@@ -28,21 +31,37 @@
     "lint-staged": "^13.1.0",
     "os-locale": "^6.0.2",
     "prettier": "^2.8.3",
-    "typescript": "^4.9.5"
+    "typescript": "^4.9.5",
+    "unist-util-visit": "^4.1.2",
+    "vitest": "^0.28.5"
   },
   "dependencies": {
     "@babel/eslint-parser": "^7.19.1",
+    "@mdx-js/rollup": "^2.3.0",
     "@types/fs-extra": "^11.0.1",
     "@types/react": "^18.0.27",
     "@types/react-dom": "^18.0.10",
-    "@vitejs/plugin-react": "^3.1.0",
+    "@vitejs/plugin-react": "^2.2.0",
+    "cac": "^6.7.14",
+    "fast-glob": "^3.2.12",
     "fs-extra": "^11.1.0",
+    "hast-util-from-html": "^1.0.1",
     "ora": "^6.1.2",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.1",
+    "rehype-autolink-headings": "^6.1.1",
+    "rehype-slug": "^5.1.0",
+    "rehype-stringify": "^9.0.3",
+    "remark-frontmatter": "^4.0.1",
+    "remark-gfm": "^3.0.1",
+    "remark-mdx-frontmatter": "^2.1.1",
+    "remark-parse": "^10.0.1",
+    "remark-rehype": "^10.1.0",
     "rollup": "^3.13.0",
+    "shiki": "^0.14.1",
     "tsup": "^6.5.0",
-    "vite": "^4.1.1"
+    "unified": "^10.1.2",
+    "vite": "3.1.4"
   }
 }
