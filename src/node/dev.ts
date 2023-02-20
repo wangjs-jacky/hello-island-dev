@@ -12,6 +12,6 @@ export async function createDevServer(
 
   return createServer({
     root: PACKAGE_ROOT,
-    plugins: createVitePlugins(siteConfig, restartServer),
+    plugins: await createVitePlugins(siteConfig, restartServer),
   });
 }

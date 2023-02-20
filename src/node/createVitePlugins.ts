@@ -5,7 +5,7 @@ import { pluginRoutes } from "./plugin-routes";
 import pluginReact from "@vitejs/plugin-react";
 import { createPluginMdx } from "./plugin-mdx";
 
-export function createVitePlugins(
+export async function createVitePlugins(
   config: SiteConfig,
   restartServer?: () => Promise<void>
 ) {
@@ -17,6 +17,6 @@ export function createVitePlugins(
     /* 处理配置插件 */
     pluginConfig(config, restartServer),
     pluginRoutes({ root: config.root }),
-    createPluginMdx(),
+    await createPluginMdx(),
   ];
 }

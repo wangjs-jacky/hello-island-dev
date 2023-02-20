@@ -6,10 +6,12 @@ import { Plugin } from "vite";
 import remarkPluginFrontmatter from "remark-frontmatter";
 import remarkPluginMDXFrontMatter from "remark-mdx-frontmatter";
 import { rehypePluginPreWrapper } from "./rehypePlugins/preWrapper";
+import { rehypePluginHighLight } from "./rehypePlugins/pluginHignLight";
+import shiki from "shiki";
 
 /* markdown 解析可以单独封装一个插件 */
 
-export function pluginMdxRollup(): Plugin {
+export async function pluginMdxRollup(): Promise<Plugin> {
   return pluginMdx({
     remarkPlugins: [
       remarkPluginGFM,
@@ -36,6 +38,10 @@ export function pluginMdxRollup(): Plugin {
         },
       ],
       rehypePluginPreWrapper,
+      [
+        rehypePluginHighLight,
+        { highlighter: await shiki.getHighlighter({ theme: "nord" }) },
+      ],
     ],
   });
 }
