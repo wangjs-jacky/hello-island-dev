@@ -7,7 +7,8 @@ import { createPluginMdx } from "./plugin-mdx";
 
 export async function createVitePlugins(
   config: SiteConfig,
-  restartServer?: () => Promise<void>
+  restartServer?: () => Promise<void>,
+  isSSR?: boolean
 ) {
   return [
     /* dev插件：中间件重定向到首页 */
@@ -16,7 +17,7 @@ export async function createVitePlugins(
     pluginReact(),
     /* 处理配置插件 */
     pluginConfig(config, restartServer),
-    pluginRoutes({ root: config.root }),
+    pluginRoutes({ root: config.root, isSSR }),
     await createPluginMdx(),
   ];
 }

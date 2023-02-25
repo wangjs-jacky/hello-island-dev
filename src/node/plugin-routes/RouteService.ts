@@ -9,6 +9,11 @@ interface RouteMeta {
   absolutePath: string;
 }
 
+export interface Routes {
+  path: string;
+  element: JSX.Element;
+}
+
 export class RouteService {
   /* 扫描文件夹 */
   #scanDir: string;
@@ -56,14 +61,16 @@ export class RouteService {
     return this.#routeData;
   }
 
-  generateRoutesCode() {
+  generateRoutesCode(ssr = false) {
     return `
     import React from 'react';
-    import loadable from '@loadable/component';
+    ${ssr ? "" : "import loadable from '@loadable/component';"}
     /* 构造动态导入组件, 使用 Route + 数字的方式命名 */
     ${this.#routeData
       .map((route, index) => {
-        return `const Route${index} = loadable(() => import('${route.absolutePath}'));`;
+        return ssr
+          ? `import Route${index} from "${route.absolutePath}";`
+          : `const Route${index} = loadable(() => import('${route.absolutePath}'));`;
       })
       .join("\n")}
     export const routes = [
