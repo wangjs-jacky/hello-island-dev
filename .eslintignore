@@ -6,3 +6,4 @@ bin
 esm-cjs
 docs
 scripts
+*.d.ts
