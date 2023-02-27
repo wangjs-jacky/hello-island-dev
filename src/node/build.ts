@@ -6,7 +6,7 @@ import fs from "fs-extra"; /* fs-extra 的包，当构建为 esm 模块时，需
 import ora from "ora";
 import { SiteConfig } from "shared/types";
 import { createVitePlugins } from "./createVitePlugins";
-import { Routes } from "./plugin-routes/RouteService";
+import { Route } from "./plugin-routes/RouteService";
 
 /* const dynamicImport = new Function('m', 'return import(m)'); */
 
@@ -54,7 +54,7 @@ export async function bundle(root: string, config: SiteConfig) {
 
 export async function renderPage(
   render: () => string,
-  routes: Routes[],
+  routes: Route[],
   root: string,
   clientBundle: RollupOutput
 ) {
@@ -105,7 +105,7 @@ export async function build(root = ".", config: SiteConfig) {
   /* 3. 服务端渲染, 产出 HTML */
   await renderPage(
     render as () => string,
-    routes as Routes[],
+    routes as Route[],
     root,
     clientBundle
   );

@@ -2,6 +2,7 @@
 import fastGlob from "fast-glob";
 import { normalizePath } from "vite";
 import * as path from "path";
+import { PageModule } from "shared/types";
 
 /* 扫描后的路由包含两个部分 */
 interface RouteMeta {
@@ -9,9 +10,11 @@ interface RouteMeta {
   absolutePath: string;
 }
 
-export interface Routes {
+export interface Route {
   path: string;
   element: JSX.Element;
+  filePath: string;
+  preload: () => Promise<PageModule>;
 }
 
 export class RouteService {
@@ -76,7 +79,7 @@ export class RouteService {
     export const routes = [
     ${this.#routeData
       .map((route, index) => {
-        return `{ path: '${route.routePath}', element: React.createElement(Route${index})}`;
+        return `{ path: '${route.routePath}', element: React.createElement(Route${index}), preload: () => import('${route.absolutePath}')}`;
       })
       .join(",\n")}
     ];

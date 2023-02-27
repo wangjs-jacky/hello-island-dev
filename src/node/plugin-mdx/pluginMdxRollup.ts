@@ -2,7 +2,7 @@ import pluginMdx from "@mdx-js/rollup";
 import remarkPluginGFM from "remark-gfm";
 import rehypePluginAutolinkHeadings from "rehype-autolink-headings";
 import rehypePluginSlug from "rehype-slug";
-import { Plugin } from "vite";
+import { Plugin } from "rollup";
 import remarkPluginFrontmatter from "remark-frontmatter";
 import remarkPluginMDXFrontMatter from "remark-mdx-frontmatter";
 import { rehypePluginPreWrapper } from "./rehypePlugins/preWrapper";
