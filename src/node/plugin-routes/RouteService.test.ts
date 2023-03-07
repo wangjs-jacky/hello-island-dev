@@ -44,9 +44,9 @@ describe("RouteService", async () => {
       const Route1 = loadable(() => import('TEST_DIR/guide/b.mdx'));
       const Route2 = loadable(() => import('TEST_DIR/index.mdx'));
           export const routes = [
-          { path: '/a', element: React.createElement(Route0)},
-      { path: '/guide/b', element: React.createElement(Route1)},
-      { path: '/', element: React.createElement(Route2)}
+          { path: '/a', element: React.createElement(Route0), preload: () => import('TEST_DIR/a.mdx')},
+      { path: '/guide/b', element: React.createElement(Route1), preload: () => import('TEST_DIR/guide/b.mdx')},
+      { path: '/', element: React.createElement(Route2), preload: () => import('TEST_DIR/index.mdx')}
           ];
           "
     `);

@@ -1,3 +1,4 @@
+import { ComponentType } from "react";
 import { UserConfig as ViteConfiguration } from "vite";
 
 export type NavItemWithLink = {
@@ -49,4 +50,41 @@ export interface SiteConfig {
   root: string;
   configPath: string;
   siteData: UserConfig;
+}
+
+/* 定义 Context 的类型定义 */
+/* 路由定义 */
+export type PageType = "home" | "doc" | "custom" | "404";
+
+export interface Header {
+  id: string;
+  text: string;
+  depth: number;
+}
+
+/* 支持解析的 yaml 数据 */
+export interface FrontMatter {
+  title?: string;
+  description?: string;
+  pageType?: PageType;
+  sidebar?: boolean;
+  outline?: boolean;
+}
+
+export interface PageData {
+  /* 配置数据 */
+  siteData: UserConfig;
+  /** location.path */
+  pagePath: string;
+  /** 元信息 */
+  frontmatter: FrontMatter;
+  /* 路由 */
+  pageType: PageType;
+  toc?: Header[];
+}
+
+export interface PageModule {
+  default: ComponentType;
+  frontmatter: FrontMatter;
+  [key: string]: unknown;
 }
