@@ -30,6 +30,7 @@ export const rehypePluginPreWrapper: Plugin<[], Root> = () => {
           },
         };
 
+        /* 将 pre 标签改为 div 标签 */
         node.tagName = "div";
         node.properties = node.properties || {};
         node.properties.className = codeClassName;
