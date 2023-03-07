@@ -9,3 +9,9 @@ declare module "island:routes" {
   const routes: RouteObject[];
   export { routes };
 }
+
+declare module "*.module.scss" {
+  /* module css文件本质上就是 key-value 结构的对象 */
+  const classes: { [key: string]: string };
+  export default classes;
+}

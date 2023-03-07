@@ -1,6 +1,10 @@
 import { Content } from "@runtime";
 import { usePageData } from "@runtime";
+/* 注：tsconfig 会从 theme-default/components/Nav 中导入，但是是错误的。 */
+import Nav from "../components/Nav";
 import "uno.css";
+import "../styles/base.css";
+import "../styles/vars.css";
 
 export const Layout = () => {
   const pageData = usePageData();
@@ -23,8 +27,8 @@ export const Layout = () => {
 
   return (
     <div>
-      <div>Nav</div>
-      {getContent()}
+      <Nav />
+      {/* {getContent()} */}
     </div>
   );
 };

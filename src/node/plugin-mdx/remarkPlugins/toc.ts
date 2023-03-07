@@ -19,6 +19,7 @@ interface ChildNode {
 }
 
 // 写法详见：https://www.npmjs.com/package/github-slugger
+// 此部分功能又被封装为一个插件：https://www.npmjs.com/package/rehype-slug
 const slugger = new Slugger();
 
 export const remarkPluginToc: Plugin<[], Root> = () => {
