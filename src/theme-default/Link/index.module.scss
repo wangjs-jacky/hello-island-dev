@@ -1,0 +1,11 @@
+.link {
+  display: block;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+
+.link:hover {
+  color: var(--island-c-brand);
+  transition: color 0.2s;
+}

@@ -328,7 +328,7 @@
 
 :root {
   --island-home-hero-name-color: transparent;
-  --island-home-hero-name-background: -webkit-linear-gradient(
+  --island-home-hero-name-background: linear-gradient(
     120deg,
     var(--island-c-brand) 30%,
     #41d1ff
