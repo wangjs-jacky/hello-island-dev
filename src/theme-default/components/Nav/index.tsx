@@ -2,6 +2,7 @@ import { usePageData } from "@runtime";
 import React from "react";
 import styles from "./index.module.scss";
 import { NavItemWithLink } from "shared/types";
+import { SwitchAppearance } from "../SwitchAppearance";
 
 export function MenuItem(item: NavItemWithLink) {
   return (
@@ -39,10 +40,14 @@ function Nav() {
           {nav.map((item) => {
             return <MenuItem {...item} key={item.text} />;
           })}
-          <div>{/* 主题切换 */}</div>
+          <div>
+            <SwitchAppearance />
+          </div>
 
-          {/* 相关链接 */}
-          <div className={styles["social-link-icon"]}>
+          {/* 相关链接
+              before 属性：添加伪元素
+          */}
+          <div className={styles["social-link-icon"]} before="menu-item-before">
             <a href="/">
               <div className="i-carbon-logo-github w-5 h-5"></div>
             </a>
