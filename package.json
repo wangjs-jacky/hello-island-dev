@@ -69,6 +69,7 @@
     "remark-stringify": "^10.0.2",
     "rollup": "^3.13.0",
     "shiki": "^0.14.1",
+    "sirv": "^2.0.2",
     "tsup": "^6.5.0",
     "unified": "^10.1.2",
     "unocss": "^0.50.1",

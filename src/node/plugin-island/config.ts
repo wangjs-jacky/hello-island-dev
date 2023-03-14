@@ -2,6 +2,9 @@ import { SiteConfig } from "shared/types";
 import { Plugin } from "vite";
 import { join, relative } from "node:path";
 import { PACKAGE_ROOT, RUNTIME_PATH } from "node/constants";
+import path from "path";
+import fs from "fs-extra";
+import sirv from "sirv";
 
 /* 虚拟模块:
   作用等价于 umi 中的运行时概念，因为在编译阶段通过 fs.readFile 是轻松获取到 config 配置的。
@@ -25,6 +28,12 @@ export function pluginConfig(
           },
         },
       };
+    },
+    configureServer(server) {
+      const publicDir = path.join(config.root, "public");
+      if (fs.pathExistsSync(publicDir)) {
+        server.middlewares.use(sirv(publicDir));
+      }
     },
     resolveId(id) {
       if (id === SITE_DATA_ID) {
