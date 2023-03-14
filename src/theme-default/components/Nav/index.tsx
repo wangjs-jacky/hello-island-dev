@@ -19,13 +19,13 @@ function Nav() {
   console.log("siteData", siteData);
   const nav = siteData?.themeConfig?.nav || [];
   return (
-    <header className="relative" w="full">
+    <header className="relative left-0 top-0" w="full" z="10">
       <div
         flex="~"
         items="center"
         justify="between"
         /* 注: 此处 divider-bottom 是自定义规则 */
-        className="px-8 h-14 divider-bottom"
+        className={`h-14 divider-bottom ${styles.nav}`}
       >
         <div>
           <a
@@ -37,10 +37,14 @@ function Nav() {
           </a>
         </div>
         <div flex="~">
-          {nav.map((item) => {
-            return <MenuItem {...item} key={item.text} />;
-          })}
-          <div>
+          <div flex="~">
+            {nav.map((item) => {
+              return <MenuItem {...item} key={item.text} />;
+            })}
+          </div>
+
+          {/* 白天/夜间模式切换 */}
+          <div before="menu-item-before" flex="~">
             <SwitchAppearance />
           </div>
 

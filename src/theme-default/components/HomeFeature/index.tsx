@@ -3,7 +3,13 @@ import { Feature } from "shared/types";
 
 const HomeFeature: React.FC<{ features: Feature[] }> = ({ features }) => {
   return (
-    <div w="max-1152px auto" flex="~ wrap" justify="between" p="x-16">
+    <div
+      /* w="max-1152px" 这种写法是错的 */
+      className="max-w-1152px"
+      m="auto"
+      flex="~ wrap"
+      justify="between"
+    >
       {features.map((feature) => {
         const { icon, title, details } = feature;
         return (
