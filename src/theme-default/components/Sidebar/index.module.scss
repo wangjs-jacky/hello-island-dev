@@ -39,8 +39,6 @@
 /* 当屏幕分辨率更大时，需要重新计算左右边距 */
 @media (min-width: 1440px) {
   .sidebar {
-    padding-left: max(32px,
-        calc(32px + (100% - var(--island-layout-max-width)) / 2));
-    width: calc(var(--island-sidebar-width) + ((100% - var(--island-layout-max-width)) / 2));
+    width: calc(var(--island-sidebar-width)); // 272px
   }
 }

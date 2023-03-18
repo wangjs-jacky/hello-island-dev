@@ -19,7 +19,7 @@ function Nav() {
   console.log("siteData", siteData);
   const nav = siteData?.themeConfig?.nav || [];
   return (
-    <header className="relative left-0 top-0" w="full" z="10">
+    <header className="fixed left-0 top-0 " w="full" z="10">
       <div
         flex="~"
         items="center"

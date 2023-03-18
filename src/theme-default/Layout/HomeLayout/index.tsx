@@ -12,4 +12,4 @@ const HomeLayout: React.FC = () => {
   );
 };
 
-export { HomeLayout };
+export default HomeLayout;

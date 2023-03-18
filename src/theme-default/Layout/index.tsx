@@ -5,8 +5,12 @@ import Nav from "../components/Nav";
 import "uno.css";
 import "../styles/base.css";
 import "../styles/vars.css";
-import { HomeLayout } from "./HomeLayout";
+import "../styles/doc.css";
+
+/* 正文区 */
 import DocLayout from "./DocLayout";
+/* 侧边栏 */
+import HomeLayout from "./HomeLayout";
 
 export const Layout = () => {
   const pageData = usePageData();
@@ -26,7 +30,9 @@ export const Layout = () => {
   return (
     <div>
       <Nav />
-      {getContent()}
+      <section style={{ paddingTop: "var(--island-nav-height)" }}>
+        {getContent()}
+      </section>
     </div>
   );
 };
