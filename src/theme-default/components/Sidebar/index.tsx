@@ -1,6 +1,6 @@
 import React from "react";
 import { SidebarGroup, SidebarItem } from "shared/types";
-import { Link } from "../../Link";
+import { Link } from "../Link";
 import styles from "./index.module.scss";
 
 interface SidebarProps {

@@ -17,6 +17,7 @@ export async function initPageData(routePath: string): Promise<PageData> {
       siteData,
       frontmatter: moduleInfo.frontmatter,
       pagePath: routePath,
+      toc: moduleInfo.toc || [] /* toc 有可能为空*/,
     };
   }
   return {

@@ -20,14 +20,15 @@
   box-shadow: var(--island-shadow-1);
 }
 
-/* 大屏尺寸时，显示侧边栏 */
-@media (min-width: 960px) {
+
+/* 1/2 屏幕 */
+@media (min-width: 721px) {
   .sidebar {
     z-index: 1;
     padding-top: var(--island-nav-height);
     padding-bottom: 128px;
     width: var(--island-sidebar-width);
-    max-width: 100%;
+    /* max-width: 100%; */
     background-color: var(--island-c-bg-alt);
     opacity: 1;
     visibility: visible;
@@ -36,9 +37,9 @@
   }
 }
 
+
+/* 大屏尺寸时，显示侧边栏 */
+@media (min-width: 1200px) {}
+
 /* 当屏幕分辨率更大时，需要重新计算左右边距 */
-@media (min-width: 1440px) {
-  .sidebar {
-    width: calc(var(--island-sidebar-width)); // 272px
-  }
-}
+@media (min-width: 1440px) {}

@@ -1,6 +1,6 @@
 import React from "react";
 import type { Hero } from "shared/types";
-import Button from "../../Button";
+import Button from "../Button";
 import styles from "./index.module.scss";
 
 const HomeHero: React.FC<{ hero: Hero }> = (props) => {
