@@ -15,8 +15,22 @@ export default declare((api) => {
     JSXOpeningElement(path, state) {
       const name = path.node.name;
 
-      /* 获取 大写的组件名称 */
-      const bindingName = (name as { name: string }).name;
+      let bindingName = "";
+      if (name.type === "JSXIdentifier") {
+        /* 获取 大写的组件名称 */
+        bindingName = (name as { name: string }).name;
+      } else if (name.type === "JSXMemberExpression") {
+        let object = name.object;
+        /* A.B.C */
+        while (t.isJSXEmptyExpression(object)) {
+          object = (object as t.JSXIdentifier | t.JSXMemberExpression).object;
+        }
+        /* 取出 A */
+        bindingName = object.name;
+      } else {
+        /* 忽略其余情况 */
+        return;
+      }
 
       /* 通过作用域，获取组件的引入位置 */
       const binding = path.scope.getBinding(bindingName);
