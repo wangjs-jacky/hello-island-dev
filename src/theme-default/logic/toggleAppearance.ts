@@ -6,9 +6,9 @@ HTML 整体结构
     - body
      - div id="root"
 */
-const classList = document.documentElement.classList;
 
 const setClassList = (isDark = false) => {
+  const classList = document.documentElement.classList;
   if (isDark) {
     classList.add("dark");
   } else {
@@ -28,6 +28,7 @@ if (typeof window !== "undefined" && typeof localStorage !== "undefined") {
 }
 
 export function toggle() {
+  const classList = document.documentElement.classList;
   if (classList.contains("dark")) {
     setClassList(false);
     /* 本地状态存储 */

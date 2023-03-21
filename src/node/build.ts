@@ -7,6 +7,7 @@ import ora from "ora";
 import { SiteConfig } from "shared/types";
 import { createVitePlugins } from "./createVitePlugins";
 import { Route } from "./plugin-routes/RouteService";
+import { RenderResult } from "../runtime/ssr-entry";
 
 /* const dynamicImport = new Function('m', 'return import(m)'); */
 
@@ -21,10 +22,12 @@ export async function bundle(root: string, config: SiteConfig) {
       /* 构建问题：bundle 的产物为 commonjs ,react-router-dom 是一个 ESM 包
         除了可以将 bundle 打包为 ESM（不要这样做），可以将 `react-router-dom` 完整打进产物中。
       */
-      noExternal: ["react-router-dom"],
+      noExternal: ["react-router-dom", "lodash-es"],
     },
     build: {
       ssr: isServer,
+      /* 主要是为了看编译后产物是否正确 */
+      minify: false,
       outDir: isServer ? join(root, ".temp") : join(root, "build"),
       rollupOptions: {
         input: isServer ? SERVER_ENTRY_PATH : CLIENT_ENTRY_PATH,
@@ -53,7 +56,7 @@ export async function bundle(root: string, config: SiteConfig) {
 }
 
 export async function renderPage(
-  render: () => string,
+  render: (url: string) => Promise<RenderResult>,
   routes: Route[],
   root: string,
   clientBundle: RollupOutput
@@ -67,7 +70,7 @@ export async function renderPage(
   return Promise.all(
     routes.map(async (route) => {
       const routePath = route.path;
-      const appHtml = render(); // 将 renderToString 产出的 HTML 嵌入模板
+      const { appHtml } = await render(routePath); // 将 renderToString 产出的 HTML 嵌入模板
       const html = `
   <!DOCTYPE html>
   <html>
@@ -103,10 +106,14 @@ export async function build(root = ".", config: SiteConfig) {
     serverEntryPath
   ); /* 使用 require 导入 CJS 包*/
   /* 3. 服务端渲染, 产出 HTML */
-  await renderPage(
-    render as () => string,
-    routes as Route[],
-    root,
-    clientBundle
-  );
+  try {
+    await renderPage(
+      render as (url: string) => Promise<RenderResult>,
+      routes as Route[],
+      root,
+      clientBundle
+    );
+  } catch (e) {
+    console.log("Render page error.\n", e);
+  }
 }

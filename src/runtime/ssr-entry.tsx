@@ -1,13 +1,27 @@
 import { renderToString } from "react-dom/server";
-import { App } from "./app";
+import { App, initPageData } from "./app";
 import { StaticRouter } from "react-router-dom/server";
+import { PageDataContext } from "./PageDataContext";
 
-export function render() {
-  return renderToString(
-    <StaticRouter location={"/guide"}>
-      <App />
-    </StaticRouter>
+export interface RenderResult {
+  appHtml: string;
+  propsData: unknown[];
+  islandToPathMap: Record<string, string>;
+}
+
+export async function render(pagePath: string) {
+  const pageData = await initPageData(pagePath);
+  const appHtml = renderToString(
+    <PageDataContext.Provider value={pageData}>
+      <StaticRouter location={pagePath}>
+        <App />
+      </StaticRouter>
+    </PageDataContext.Provider>
   );
+
+  return {
+    appHtml,
+  };
 }
 
 /* 导出路由数据 */
