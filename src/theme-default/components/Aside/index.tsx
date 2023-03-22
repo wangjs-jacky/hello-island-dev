@@ -1,4 +1,4 @@
-import { Header } from "shared/types";
+import { Header, PropsWithIsland } from "shared/types";
 import { useRef, useEffect } from "react";
 import { bindingAsideScroll, scrollToTarget } from "../../logic/asideScroll";
 
@@ -6,7 +6,7 @@ interface AsideProps {
   headers: Header[];
 }
 
-export function Aside(props: AsideProps) {
+export function Aside(props: AsideProps & PropsWithIsland) {
   const { headers = [] } = props;
   // 是否展示大纲栏
   const hasOutline = headers.length > 0;

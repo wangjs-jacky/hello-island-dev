@@ -31,5 +31,6 @@ module.exports = {
     "prettier/prettier": "warn" /* 默认为 error */,
     "@typescript-eslint/no-unsafe-assignment": "warn",
     "@typescript-eslint/no-misused-promises": "off",
+    "@typescript-eslint/ban-ts-comment": "off",
   },
 };

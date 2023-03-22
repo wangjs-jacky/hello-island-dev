@@ -40,7 +40,7 @@ const DocLayout = () => {
         </div>
         {/* 目录 */}
         <div className={styles["aside-container"]}>
-          <Aside headers={toc}></Aside>
+          <Aside headers={toc} __island></Aside>
         </div>
       </div>
     </div>
