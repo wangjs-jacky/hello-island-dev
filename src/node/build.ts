@@ -144,8 +144,20 @@ export async function renderPage(
   return Promise.all(
     routes.map(async (route) => {
       const routePath = route.path;
-      const { appHtml, islandToPathMap, propsData } = await render(routePath); // 将 renderToString 产出的 HTML 嵌入模板
-      await buildIslands(root, islandToPathMap);
+      const {
+        appHtml,
+        islandToPathMap,
+        islandProps = [],
+      } = await render(routePath); // 将 renderToString 产出的 HTML 嵌入模板
+
+      /* 注入1： 从客户端的入口文件中获取 css 等静态文件，并注入到 ssr 模板中 */
+      const styleAssets = clientBundle.output.filter(
+        (chunk) => chunk.type === "asset" && chunk.fileName.endsWith(".css")
+      );
+      /* 单独对标识为 __island 标识的组件进行打包 */
+      const islandBunlde = await buildIslands(root, islandToPathMap);
+
+      const islandsCode = (islandBunlde as RollupOutput).output[0].code;
       const html = `
   <!DOCTYPE html>
   <html>
@@ -154,10 +166,18 @@ export async function renderPage(
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <title>title</title>
       <meta name="description" content="xxx">
+      ${styleAssets
+        .map((item) => `<link rel="stylesheet" href="/${item.fileName}">`)
+        .join("\n")}
     </head>
     <body>
       <div id="root">${appHtml}</div>
+      /* （水合过程：）注入 island 内部代码 */
+      <script type="module">${islandsCode}</script>
+      /* 全量客户端入口代码，后续待优化 */
       <script type="module" src="/${clientChunk?.fileName}"></script>
+      /* 将 props 上的数据也绑定在 script 上面 */
+      <script id="island-props">${JSON.stringify(islandProps)}</script>
     </body>
   </html>`.trim();
       /* 补上后缀 */

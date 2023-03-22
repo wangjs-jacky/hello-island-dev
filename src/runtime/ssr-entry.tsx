@@ -5,7 +5,7 @@ import { PageDataContext } from "./PageDataContext";
 
 export interface RenderResult {
   appHtml: string;
-  propsData: unknown[];
+  islandProps: unknown[];
   islandToPathMap: Record<string, string>;
 }
 
