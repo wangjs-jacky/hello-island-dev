@@ -1,5 +1,9 @@
 import { build as viteBuild, InlineConfig } from "vite";
-import { CLIENT_ENTRY_PATH, SERVER_ENTRY_PATH } from "./constants";
+import {
+  CLIENT_ENTRY_PATH,
+  MASK_SPLITTER,
+  SERVER_ENTRY_PATH,
+} from "./constants";
 import type { RollupOutput } from "rollup";
 import { dirname, join } from "path";
 import fs from "fs-extra"; /* fs-extra 的包，当构建为 esm 模块时，需配置 tsconfig*/
@@ -8,6 +12,7 @@ import { SiteConfig } from "shared/types";
 import { createVitePlugins } from "./createVitePlugins";
 import { Route } from "./plugin-routes/RouteService";
 import { RenderResult } from "../runtime/ssr-entry";
+import path from "path";
 
 /* const dynamicImport = new Function('m', 'return import(m)'); */
 
@@ -55,6 +60,75 @@ export async function bundle(root: string, config: SiteConfig) {
   }
 }
 
+async function buildIslands(
+  root: string,
+  islandPathToMap: Record<string, string>
+) {
+  // { Aside: 'xxx' }
+  // 内容
+  // import { Aside } from 'xxx'
+  // window.ISLANDS = { Aside }
+  // window.ISLAND_PROPS = JSON.parse(
+  // document.getElementById('island-props').textContent
+  // );
+  const islandsInjectCode = `
+    ${Object.entries(islandPathToMap)
+      .map(
+        ([islandName, islandPath]) =>
+          `import { ${islandName} } from '${islandPath}'`
+      )
+      .join("")}
+window.ISLANDS = { ${Object.keys(islandPathToMap).join(", ")} };
+window.ISLAND_PROPS = JSON.parse(
+  document.getElementById('island-props').textContent
+);
+  `;
+  const injectId = "island:inject";
+  /* 使用 rollup 对代码进行打包，并使用 plugins 插件 */
+  return viteBuild({
+    mode: "production",
+    build: {
+      outDir: path.join(root, ".temp"),
+      rollupOptions: {
+        input: injectId /* input 为啥不是一个路径？*/,
+      },
+      minify: false,
+    },
+    plugins: [
+      {
+        name: "island:inject",
+        enforce: "post" /* enforce 的目的？*/,
+        resolveId(id) {
+          if (id.includes(MASK_SPLITTER)) {
+            const [originId, importer] = id.split(MASK_SPLITTER);
+            return this.resolve(originId, importer, {
+              skipSelf: true /* skipSelf 的作用？ */,
+            });
+          }
+
+          /* 不理解，可能等 vite 插件看完以后会有所了解吧 */
+          if (id === injectId) {
+            return id;
+          }
+        },
+        load(id) {
+          if (id === injectId) {
+            return islandsInjectCode;
+          }
+        },
+        generateBundle(_, bundle) {
+          for (const name in bundle) {
+            /* 将所有的静态资源删除 */
+            if (bundle[name].type === "asset") {
+              delete bundle[name];
+            }
+          }
+        },
+      },
+    ],
+  });
+}
+
 export async function renderPage(
   render: (url: string) => Promise<RenderResult>,
   routes: Route[],
@@ -70,7 +144,8 @@ export async function renderPage(
   return Promise.all(
     routes.map(async (route) => {
       const routePath = route.path;
-      const { appHtml } = await render(routePath); // 将 renderToString 产出的 HTML 嵌入模板
+      const { appHtml, islandToPathMap, propsData } = await render(routePath); // 将 renderToString 产出的 HTML 嵌入模板
+      await buildIslands(root, islandToPathMap);
       const html = `
   <!DOCTYPE html>
   <html>
