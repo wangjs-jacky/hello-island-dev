@@ -16,6 +16,8 @@ import path from "path";
 
 /* const dynamicImport = new Function('m', 'return import(m)'); */
 
+const CLIENT_OUTPUT = "build";
+
 export async function bundle(root: string, config: SiteConfig) {
   const resolveViteConfig = async (
     isServer = false
@@ -33,7 +35,7 @@ export async function bundle(root: string, config: SiteConfig) {
       ssr: isServer,
       /* 主要是为了看编译后产物是否正确 */
       minify: false,
-      outDir: isServer ? join(root, ".temp") : join(root, "build"),
+      outDir: isServer ? join(root, ".temp") : join(root, CLIENT_OUTPUT),
       rollupOptions: {
         input: isServer ? SERVER_ENTRY_PATH : CLIENT_ENTRY_PATH,
         output: {
@@ -54,6 +56,13 @@ export async function bundle(root: string, config: SiteConfig) {
       /* server build */
       viteBuild(await resolveViteConfig(true)),
     ]);
+
+    /* 在构建打包后，移动 public 文件夹 */
+    const publicDir = join(root, "public");
+    if (fs.pathExistsSync(publicDir)) {
+      await fs.copy(publicDir, join(root, CLIENT_OUTPUT));
+    }
+
     return [clientBundle, serverBundle] as [RollupOutput, RollupOutput];
   } catch (error) {
     console.log(error);
@@ -172,11 +181,11 @@ export async function renderPage(
     </head>
     <body>
       <div id="root">${appHtml}</div>
-      /* （水合过程：）注入 island 内部代码 */
+      <!-- 水合过程：）注入 island 内部代码  -->
       <script type="module">${islandsCode}</script>
-      /* 全量客户端入口代码，后续待优化 */
-      <script type="module" src="/${clientChunk?.fileName}"></script>
-      /* 将 props 上的数据也绑定在 script 上面 */
+      <!-- 全量客户端入口代码，后续待优化  -->
+      <script type="module" src="/${clientChunk?.fileName}"></script> 
+      <!-- 将 props 上的数据也绑定在 script 上面-->
       <script id="island-props">${JSON.stringify(islandProps)}</script>
     </body>
   </html>`.trim();
