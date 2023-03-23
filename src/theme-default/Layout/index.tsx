@@ -5,6 +5,12 @@ import Nav from "../components/Nav";
 import "uno.css";
 import "../styles/base.css";
 import "../styles/vars.css";
+import "../styles/doc.css";
+
+/* 正文区 */
+import DocLayout from "./DocLayout";
+/* 侧边栏 */
+import HomeLayout from "./HomeLayout";
 
 export const Layout = () => {
   const pageData = usePageData();
@@ -13,13 +19,9 @@ export const Layout = () => {
 
   const getContent = () => {
     if (pageType === "home") {
-      return <div> Home 页面</div>;
+      return <HomeLayout />;
     } else if (pageType === "doc") {
-      return (
-        <div>
-          <Content></Content>
-        </div>
-      );
+      return <DocLayout />;
     } else {
       return <div>404 页面</div>;
     }
@@ -28,7 +30,9 @@ export const Layout = () => {
   return (
     <div>
       <Nav />
-      {/* {getContent()} */}
+      <section style={{ paddingTop: "var(--island-nav-height)" }}>
+        {getContent()}
+      </section>
     </div>
   );
 };

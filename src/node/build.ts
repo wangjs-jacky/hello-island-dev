@@ -1,5 +1,9 @@
 import { build as viteBuild, InlineConfig } from "vite";
-import { CLIENT_ENTRY_PATH, SERVER_ENTRY_PATH } from "./constants";
+import {
+  CLIENT_ENTRY_PATH,
+  MASK_SPLITTER,
+  SERVER_ENTRY_PATH,
+} from "./constants";
 import type { RollupOutput } from "rollup";
 import { dirname, join } from "path";
 import fs from "fs-extra"; /* fs-extra 的包，当构建为 esm 模块时，需配置 tsconfig*/
@@ -7,8 +11,12 @@ import ora from "ora";
 import { SiteConfig } from "shared/types";
 import { createVitePlugins } from "./createVitePlugins";
 import { Route } from "./plugin-routes/RouteService";
+import { RenderResult } from "../runtime/ssr-entry";
+import path from "path";
 
 /* const dynamicImport = new Function('m', 'return import(m)'); */
+
+const CLIENT_OUTPUT = "build";
 
 export async function bundle(root: string, config: SiteConfig) {
   const resolveViteConfig = async (
@@ -21,11 +29,13 @@ export async function bundle(root: string, config: SiteConfig) {
       /* 构建问题：bundle 的产物为 commonjs ,react-router-dom 是一个 ESM 包
         除了可以将 bundle 打包为 ESM（不要这样做），可以将 `react-router-dom` 完整打进产物中。
       */
-      noExternal: ["react-router-dom"],
+      noExternal: ["react-router-dom", "lodash-es"],
     },
     build: {
       ssr: isServer,
-      outDir: isServer ? join(root, ".temp") : join(root, "build"),
+      /* 主要是为了看编译后产物是否正确 */
+      minify: false,
+      outDir: isServer ? join(root, ".temp") : join(root, CLIENT_OUTPUT),
       rollupOptions: {
         input: isServer ? SERVER_ENTRY_PATH : CLIENT_ENTRY_PATH,
         output: {
@@ -46,14 +56,90 @@ export async function bundle(root: string, config: SiteConfig) {
       /* server build */
       viteBuild(await resolveViteConfig(true)),
     ]);
+
+    /* 在构建打包后，移动 public 文件夹 */
+    const publicDir = join(root, "public");
+    if (fs.pathExistsSync(publicDir)) {
+      await fs.copy(publicDir, join(root, CLIENT_OUTPUT));
+    }
+
     return [clientBundle, serverBundle] as [RollupOutput, RollupOutput];
   } catch (error) {
     console.log(error);
   }
 }
 
+async function buildIslands(
+  root: string,
+  islandPathToMap: Record<string, string>
+) {
+  // { Aside: 'xxx' }
+  // 内容
+  // import { Aside } from 'xxx'
+  // window.ISLANDS = { Aside }
+  // window.ISLAND_PROPS = JSON.parse(
+  // document.getElementById('island-props').textContent
+  // );
+  const islandsInjectCode = `
+    ${Object.entries(islandPathToMap)
+      .map(
+        ([islandName, islandPath]) =>
+          `import { ${islandName} } from '${islandPath}'`
+      )
+      .join("")}
+window.ISLANDS = { ${Object.keys(islandPathToMap).join(", ")} };
+window.ISLAND_PROPS = JSON.parse(
+  document.getElementById('island-props').textContent
+);
+  `;
+  const injectId = "island:inject";
+  /* 使用 rollup 对代码进行打包，并使用 plugins 插件 */
+  return viteBuild({
+    mode: "production",
+    build: {
+      outDir: path.join(root, ".temp"),
+      rollupOptions: {
+        input: injectId /* input 为啥不是一个路径？*/,
+      },
+      minify: false,
+    },
+    plugins: [
+      {
+        name: "island:inject",
+        enforce: "post" /* enforce 的目的？*/,
+        resolveId(id) {
+          if (id.includes(MASK_SPLITTER)) {
+            const [originId, importer] = id.split(MASK_SPLITTER);
+            return this.resolve(originId, importer, {
+              skipSelf: true /* skipSelf 的作用？ */,
+            });
+          }
+
+          /* 不理解，可能等 vite 插件看完以后会有所了解吧 */
+          if (id === injectId) {
+            return id;
+          }
+        },
+        load(id) {
+          if (id === injectId) {
+            return islandsInjectCode;
+          }
+        },
+        generateBundle(_, bundle) {
+          for (const name in bundle) {
+            /* 将所有的静态资源删除 */
+            if (bundle[name].type === "asset") {
+              delete bundle[name];
+            }
+          }
+        },
+      },
+    ],
+  });
+}
+
 export async function renderPage(
-  render: () => string,
+  render: (url: string) => Promise<RenderResult>,
   routes: Route[],
   root: string,
   clientBundle: RollupOutput
@@ -67,7 +153,20 @@ export async function renderPage(
   return Promise.all(
     routes.map(async (route) => {
       const routePath = route.path;
-      const appHtml = render(); // 将 renderToString 产出的 HTML 嵌入模板
+      const {
+        appHtml,
+        islandToPathMap,
+        islandProps = [],
+      } = await render(routePath); // 将 renderToString 产出的 HTML 嵌入模板
+
+      /* 注入1： 从客户端的入口文件中获取 css 等静态文件，并注入到 ssr 模板中 */
+      const styleAssets = clientBundle.output.filter(
+        (chunk) => chunk.type === "asset" && chunk.fileName.endsWith(".css")
+      );
+      /* 单独对标识为 __island 标识的组件进行打包 */
+      const islandBunlde = await buildIslands(root, islandToPathMap);
+
+      const islandsCode = (islandBunlde as RollupOutput).output[0].code;
       const html = `
   <!DOCTYPE html>
   <html>
@@ -76,10 +175,18 @@ export async function renderPage(
       <meta name="viewport" content="width=device-width,initial-scale=1">
       <title>title</title>
       <meta name="description" content="xxx">
+      ${styleAssets
+        .map((item) => `<link rel="stylesheet" href="/${item.fileName}">`)
+        .join("\n")}
     </head>
     <body>
       <div id="root">${appHtml}</div>
-      <script type="module" src="/${clientChunk?.fileName}"></script>
+      <!-- 水合过程：）注入 island 内部代码  -->
+      <script type="module">${islandsCode}</script>
+      <!-- 全量客户端入口代码，后续待优化  -->
+      <script type="module" src="/${clientChunk?.fileName}"></script> 
+      <!-- 将 props 上的数据也绑定在 script 上面-->
+      <script id="island-props">${JSON.stringify(islandProps)}</script>
     </body>
   </html>`.trim();
       /* 补上后缀 */
@@ -103,10 +210,14 @@ export async function build(root = ".", config: SiteConfig) {
     serverEntryPath
   ); /* 使用 require 导入 CJS 包*/
   /* 3. 服务端渲染, 产出 HTML */
-  await renderPage(
-    render as () => string,
-    routes as Route[],
-    root,
-    clientBundle
-  );
+  try {
+    await renderPage(
+      render as (url: string) => Promise<RenderResult>,
+      routes as Route[],
+      root,
+      clientBundle
+    );
+  } catch (e) {
+    console.log("Render page error.\n", e);
+  }
 }

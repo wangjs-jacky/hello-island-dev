@@ -328,7 +328,7 @@
 
 :root {
   --island-home-hero-name-color: transparent;
-  --island-home-hero-name-background: -webkit-linear-gradient(
+  --island-home-hero-name-background: linear-gradient(
     120deg,
     var(--island-c-brand) 30%,
     #41d1ff
@@ -353,4 +353,8 @@
     0 3px 9px rgba(0, 0, 0, 0.12);
   --island-shadow-5: 0 18px 56px rgba(0, 0, 0, 0.16),
     0 4px 12px rgba(0, 0, 0, 0.16);
+}
+
+:root {
+  --island-aside-width: 230px;
 }

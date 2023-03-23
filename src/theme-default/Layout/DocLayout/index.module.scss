@@ -1,0 +1,65 @@
+$paddingCus: 20px;
+
+
+/* 内容-整体边距 */
+.content {
+  margin-left: $paddingCus;
+  margin-right: $paddingCus;
+  padding: 48px 0;
+  display: flex;
+  justify-content: center;
+
+}
+
+.doc-content {}
+
+/* style={{
+  width: "var(--island-aside-width)",
+}} */
+
+.aside-container {
+  /* 右侧导航栏不变 */
+  position: sticky;
+  top: 0;
+  width: 0px;
+  margin-top: calc(var(--island-nav-height) * -1 - 32px);
+  padding-top: calc(var(--island-nav-height) + 32px);
+  height: 100vh;
+  overflow-x: hidden;
+  overflow-y: auto;
+  scrollbar-width: none;
+}
+
+/* > 1/2模式 */
+@media (min-width: 721px) {
+  .content {
+    margin-left: calc(var(--island-sidebar-width) + $paddingCus);
+  }
+
+  /*   .aside-container {
+    min-width: var(--island-aside-width);
+  } */
+}
+
+
+
+/* > 3/4模式，此时显示侧边栏 */
+@media (min-width: 1200px) {
+  .content {
+    margin-left: calc(var(--island-sidebar-width) + $paddingCus);
+    min-width: 600px;
+  }
+
+  .aside-container {
+    min-width: var(--island-aside-width);
+  }
+}
+
+/* 全屏模式 */
+@media (min-width: 1441px) {
+  .content {
+    margin-right: calc(var(--island-sidebar-width) + $paddingCus);
+  }
+
+
+}

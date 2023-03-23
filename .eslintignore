@@ -7,3 +7,4 @@ esm-cjs
 docs
 scripts
 *.d.ts
+jsx-runtime.js

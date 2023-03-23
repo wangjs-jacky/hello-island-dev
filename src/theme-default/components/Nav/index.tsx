@@ -2,8 +2,9 @@ import { usePageData } from "@runtime";
 import React from "react";
 import styles from "./index.module.scss";
 import { NavItemWithLink } from "shared/types";
+import { SwitchAppearance } from "../SwitchAppearance";
 
-export function MenuItem(item: NavItemWithLink) {
+export function MenuItem({ item }: { item: NavItemWithLink }) {
   return (
     <div className="text-sm font-medium mx-3">
       <a href={item.link} className={styles.link}>
@@ -18,13 +19,13 @@ function Nav() {
   console.log("siteData", siteData);
   const nav = siteData?.themeConfig?.nav || [];
   return (
-    <header className="relative" w="full">
+    <header className="fixed left-0 top-0 " w="full" z="10">
       <div
         flex="~"
         items="center"
         justify="between"
         /* 注: 此处 divider-bottom 是自定义规则 */
-        className="px-8 h-14 divider-bottom"
+        className={`h-14 divider-bottom ${styles.nav}`}
       >
         <div>
           <a
@@ -36,13 +37,21 @@ function Nav() {
           </a>
         </div>
         <div flex="~">
-          {nav.map((item) => {
-            return <MenuItem {...item} key={item.text} />;
-          })}
-          <div>{/* 主题切换 */}</div>
+          <div flex="~">
+            {nav.map((item) => {
+              return <MenuItem item={item} key={item.text} />;
+            })}
+          </div>
 
-          {/* 相关链接 */}
-          <div className={styles["social-link-icon"]}>
+          {/* 白天/夜间模式切换 */}
+          <div before="menu-item-before" flex="~">
+            <SwitchAppearance />
+          </div>
+
+          {/* 相关链接
+              before 属性：添加伪元素
+          */}
+          <div className={styles["social-link-icon"]} before="menu-item-before">
             <a href="/">
               <div className="i-carbon-logo-github w-5 h-5"></div>
             </a>

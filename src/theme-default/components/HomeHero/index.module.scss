@@ -1,0 +1,8 @@
+.clip {
+  background: var(--island-home-hero-name-background);
+  /* 使用文字裁剪 */
+  background-clip: text;
+  -webkit-background-clip: text;
+  color: transparent;
+  /* -webkit-text-fill-color: var(--island-home-hero-name-color); */
+}

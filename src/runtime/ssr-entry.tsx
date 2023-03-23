@@ -1,13 +1,32 @@
 import { renderToString } from "react-dom/server";
-import { App } from "./app";
+import { App, initPageData } from "./app";
 import { StaticRouter } from "react-router-dom/server";
+import { PageDataContext } from "./PageDataContext";
 
-export function render() {
-  return renderToString(
-    <StaticRouter location={"/guide"}>
-      <App />
-    </StaticRouter>
+export interface RenderResult {
+  appHtml: string;
+  islandProps: unknown[];
+  islandToPathMap: Record<string, string>;
+}
+
+export async function render(pagePath: string) {
+  const pageData = await initPageData(pagePath);
+  const { clearIslandData, data } = await import("./jsx-runtime");
+  clearIslandData();
+  const { islandProps, islandToPathMap } = data;
+  const appHtml = renderToString(
+    <PageDataContext.Provider value={pageData}>
+      <StaticRouter location={pagePath}>
+        <App />
+      </StaticRouter>
+    </PageDataContext.Provider>
   );
+
+  return {
+    appHtml,
+    islandProps,
+    islandToPathMap,
+  };
 }
 
 /* 导出路由数据 */
